@@ -79,23 +79,7 @@
 </head>
 <body>
 <div>
-<center>
-  
-  <div  id="consigna">
-    <br><br><br><br><br><br>
-    <div class="textbox">
-    
-    <p>Ahora vas a ver varios grupos de caras de 4 fotos cada uno, donde en cada uno de ellos puede estar o no estar alguna de las caras qué viste ayer.
-      <br>
-      Si reconoces alguna de las caras, seleccioná el item correspondiente.
-      <br>
-      Si no reconoces ninguna, seleccioná el item "No reconozo ninguna foto".
-    </p>
 
-    <button onclick=arrancar()>Hacé click aca para empezar</button>
-  </div>
-  </div>
-</center>
   
   
   <div id="corte" style="display: none;">
@@ -109,8 +93,8 @@
   </div>
 
 
-  <div class="container" id="lineup" style="display: none;">
-    <div id="ruedas">
+  <div class="container" id="lineup" >
+    <div id="ruedas" style="display: none;">
     <div class="row">
       <div class="image">
         <img src="1.png" id="1">
@@ -135,11 +119,12 @@
     </div>
 
     </div>
-    <form action="https://docs.google.com/forms/d/e/1FAIpQLSc84hmysn5XEWWwdmQ5pDi9hNRSsj7VCK-Fg_yA013eBRribA/formResponse">
+    <form  onkeydown="return event.key != 'Enter';" action="https://docs.google.com/forms/d/e/1FAIpQLSc84hmysn5XEWWwdmQ5pDi9hNRSsj7VCK-Fg_yA013eBRribA/formResponse">
+
 
      <!--primer lineup -->
      <div id="lineup1" >
-      <div id="primero">
+      <div id="primero" style="display: none;">
       <label for="1">foto 1 </label>
         <input type="radio" id="opcion1" name="entry.344689282" value="1">
 
@@ -198,7 +183,36 @@
    </div>
   </center>
    
+  <center>
+  
+    <div  id="consigna">
+      <br><br><br><br>
+
+      <div id="ident">
+        <label for="identificacion"> Ingresa tu nombre:</label>
+        <input type="text" id="identificacion" name="entry.1505109284">
       
+        
+
+      </div> <br><br><br>
+      <div class="textbox">
+
+
+      
+      <p>Ahora vas a ver varios grupos de caras de 4 fotos cada uno, donde en cada uno de ellos puede estar o no estar alguna de las caras qué viste ayer.
+        <br>
+        Si reconoces alguna de las caras, seleccioná el item correspondiente.
+        <br>
+        Si no reconoces ninguna, seleccioná el item "No reconozo ninguna foto".
+      </p>
+  
+      <button type="button" onclick=arrancar()>Hacé click aca para empezar</button>
+
+    </div>
+    </div>
+
+    
+  </center>
 
     
       
@@ -285,13 +299,32 @@ listadeconfianza=[
         let indice=0;
         function pasar() {
         indice++;
-        document.getElementById("primero").style.display="none";
+        
         if (indice==1){
-           
+          var first = document.querySelector("input[name='entry.344689282']:checked");
+
+        
+          if (!first) {
+             alert("Por favor responde la pregunta anterior antes de continuar.");
+             indice=0;
+             return;
+  
+            }
+          document.getElementById("primero").style.display="none";
           document.getElementById("lineup1").style.display="none";
           document.getElementById("confianza1").style.display="block";
         }
         else if(indice==2){
+          var second =Number(document.querySelector('input[name="entry.765174671"]').value);
+
+
+          if (second=="" || isNaN(second)) {
+          alert("Por favor responde la pregunta anterior con un numero entre 1 y 100.");
+          indice=1;
+          return;
+        }
+
+
           document.getElementById("lineup").style.display="none";
           document.getElementById("lineup1").style.display="none";
           document.getElementById("confianza1").style.display="none";
@@ -432,6 +465,17 @@ listadeconfianza=[
 
 
         function pasarAConfianza() {
+          
+        console.log(listadeform[indice]);  
+        var disposit = document.querySelector("input[name='"+listadeform[indice] +"']:checked");
+
+        
+        if (!disposit ) {
+          alert("Por favor responde la pregunta anterior antes de continuar.");
+          return;
+        }
+     
+          console.log(listadeform[indice].value);
           console.log("lo que se oculta es"+ document.getElementById(nombre).id);
           document.getElementById(nombre).style.display="none";
           document.getElementById(nombre+1).style.display="none";
@@ -463,6 +507,15 @@ listadeconfianza=[
 
         function pasarACorte (){
 
+          var nameRespuesta =parseInt(document.querySelector('input[name="'+listadeconfianza[indice] +'"]').value);
+          console.log(nameRespuesta);
+          console.log(typeof(nameRespuesta));
+
+          if (nameRespuesta=="" || isNaN(nameRespuesta)) {
+          alert("Por favor responde la pregunta anterior con un numero entre 1 y 100.");
+          return;
+        }
+
           
           document.getElementById("lineup").style.display="none";
           document.getElementById("corte").style.display="block";
@@ -472,8 +525,19 @@ listadeconfianza=[
 
 
         function arrancar( ) {
+
+          var ide =document.querySelector('input[name="entry.1505109284"]').value;
+
+
+          if (ide=="" ) {
+          alert("Por favor ingresa tu nombre antes de comenzar");
+          
+          return;
+          }
           document.getElementById("consigna").style.display="none";
           document.getElementById("lineup").style.display="block";
+          document.getElementById("ruedas").style.display="block";
+          document.getElementById("primero").style.display="block";
 
         }
 
