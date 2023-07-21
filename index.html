@@ -454,7 +454,7 @@ listadeconfianza=[
           document.getElementById("cont").style.display="none";
          
           document.getElementById("final").style.display="block";
-          
+          salirPantallaCompleta();
 
 
         }
@@ -534,6 +534,9 @@ listadeconfianza=[
           
           return;
           }
+          activarPantallaCompleta();
+
+          
           document.getElementById("consigna").style.display="none";
           document.getElementById("lineup").style.display="block";
           document.getElementById("ruedas").style.display="block";
@@ -541,7 +544,35 @@ listadeconfianza=[
 
         }
 
+function activarPantallaCompleta() {
+            var elemento = document.documentElement; // La página completa
 
+            // Verifica si el método requestFullscreen es compatible con el navegador
+            if (elemento.requestFullscreen) {
+                // Coloca la página completa en modo de pantalla completa
+                elemento.requestFullscreen();
+            } else if (elemento.mozRequestFullScreen) { // Firefox
+                elemento.mozRequestFullScreen();
+            } else if (elemento.webkitRequestFullscreen) { // Chrome, Safari y Opera
+                elemento.webkitRequestFullscreen();
+            } else if (elemento.msRequestFullscreen) { // Internet Explorer / Edge
+                elemento.msRequestFullscreen();
+            }
+        }
+
+        function salirPantallaCompleta() {
+            // Verifica si el método exitFullscreen es compatible con el navegador
+            if (document.exitFullscreen) {
+                // Sale del modo de pantalla completa
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { // Firefox
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { // Chrome, Safari y Opera
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { // Internet Explorer / Edge
+                document.msExitFullscreen();
+            }
+        }
 
       </script>
 
