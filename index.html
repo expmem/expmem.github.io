@@ -1,594 +1,293 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruedas de Reconocimiento</title>
   <style>
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* General */
     body, html {
       height: 100%;
-      margin: 0;
-      
-    }
-
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-      text-align: center;
-    }
-
-    .row {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      padding: 2px;
-    }
-
-    .image {
-      position: relative;
-      margin: 5px;
-      flex-basis: 30%;
-      max-width: 300px;
-    }
-
-    .image img {
-      max-width: 80%;
-      height: auto;
-    }
-
-    .image .number {
-      position: absolute;
-      bottom: 5%;
-      right: 20%;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: white;
-      padding: 5px;
-      font-size: 14px;
-      border-radius: 5px;
-    }
-
-    .form {
-      display: flex;
-      
-      margin-left: 20px;
-    }
-
-    .form button {
-      margin: 5px 0;
-      margin-left: 10px;
-    }
-
-    label {
-      margin-left: 30px; /* Ajusta el valor según tus necesidades */
-    }
-
-    .textbox {
-      width: 300px;
-      height: 300px;
-      border: 2px solid #ccc;
-      border-radius: 5px;
-      padding: 10px;
-      text-align: center;
       font-family: Arial, sans-serif;
-      font-size: 18px;
-      background-color: #fff;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      top: 30px;
     }
+
+    /* Full-screen containers */
+    .full-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .hidden { display: none; }
+
+    /* Grid for photos */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    .photo {
+      width: 100%;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .photo:hover {
+      transform: scale(1.05);
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      display: none;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+      max-width: 90%;
+      width: 300px;
+    }
+
+    /* Buttons */
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .confirm-button { background-color: #4CAF50; color: white; }
+    .cancel-button { background-color: #f44336; color: white; }
   </style>
 </head>
 <body>
-<div>
 
-  
-  
-  <div id="corte" style="display: none;">
-    <center>
-      <br>
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<div class="full-screen" id="nameScreen">
+  <h2>Por favor, ingresa tu nombre</h2>
+  <input type="text" id="nameInput" placeholder="Nombre" required>
+  <p>¿Estás usando computadora o celular?</p>
+  <button onclick="setDevice('Computadora')">Computadora</button>
+  <button onclick="setDevice('Celular')">Celular</button>
+</div>
 
-    <button type="button" onclick= pasar() style="padding: 20px;">Siguiente</button><br>
-  </center>
+<div class="full-screen hidden" id="instructionsStart">
+  <h2>Instrucciones</h2>
+  <p>A continuación verás dos ruedas de reconocimiento. Selecciona la imagen que creas correcta.</p>
+  <button onclick="showLineup()">Comenzar</button>
+</div>
 
+<div class="full-screen hidden" id="lineupContainer">
+  <h2>Rueda de Reconocimiento</h2>
+  <div class="photo-grid" id="photoGrid">
+    <!-- Photos will be dynamically added here -->
   </div>
-
-
-  <div class="container" id="lineup" >
-    <div id="ruedas" style="display: none;">
-    <div class="row">
-      <div class="image">
-        <img src="1.png" id="1">
-        <div class="number">1</div>
-      </div>
-      <div class="image">
-        <img src="2.png" id="2">
-        <div class="number">2</div>
-      </div>
-
-    </div>
-    <div class="row">
-      <div class="image">
-        <img src="3.png" id="3">
-        <div class="number">3</div>
-      </div>
-      <div class="image">
-        <img src="4.png" id="4">
-        <div class="number">4</div>
-      </div>
-
-    </div>
-
-    </div>
-    <form  onkeydown="return event.key != 'Enter';" action="https://docs.google.com/forms/d/e/1FAIpQLSc84hmysn5XEWWwdmQ5pDi9hNRSsj7VCK-Fg_yA013eBRribA/formResponse">
-
-
-     <!--primer lineup -->
-     <div id="lineup1" >
-      <div id="primero" style="display: none;">
-      <label for="1">foto 1 </label>
-        <input type="radio" id="opcion1" name="entry.344689282" value="1">
-
-        <label for="2">foto 2 </label>
-        <input type="radio" id="opcion2" name="entry.344689282" value="2">
-        
-
-        <label for="3">foto 3 </label>
-        <input type="radio" id="opcion3" name="entry.344689282" value="3">
-        
-
-        <label for="4">foto 4 </label>
-        <input type="radio" id="opcion4" name="entry.344689282" value="4">
-        
-
-        
-        <label for="0">No reconozco ninguna foto </label>
-        <input type="radio" id="opcion0" name="entry.344689282" value="0">
-        
-
-       <br><br> <button type="button" onclick= pasar()>continuar</button>
-
-      </div>
-
-      </div>
-        <!--fin de primer lineup -->
-
-        <!--primer pregunta de confianza -->
-        <center>
-        <div id="confianza1" style="display: none;">
-        <label for="entry.765174671">¿Cuanta confianza tenes en tu elección? Respondé con un número entre el 1 y el 100</label><br>
-        <input type="text" name="entry.765174671"><br>
-        <button type="button" onclick= pasar()>continuar</button><br>
-        
-      </div>
-      </center>
-      <!--fin de primer pregunta de confianza -->
-      <center>
-    
-        
-      <button id="cont" type="button" onclick= pasarACorte() style="display: none;">continuar</button><br>
-    </center>
-
-    <center>
-     
-    <button id="irAConfianza" type="button" onclick=pasarAConfianza() style="display: none;">continuar</button><br>
-  </center>
-
-     <center>
-  <div id="final" style="display: none;" class="textbox">
-    Terminaste, Muchas gracias por participar! 
-    <br><br><br><br><br><br><br>
-
-    <br><button type="submit"> Enviar respuestas</button>
-
-   </div>
-  </center>
-   
-  <center>
-  
-    <div  id="consigna">
-      <br><br><br><br>
-
-      <div id="ident">
-        <label for="identificacion"> Ingresa tu nombre:</label>
-        <input type="text" id="identificacion" name="entry.1505109284">
-      
-        
-
-      </div> <br><br><br>
-      <div class="textbox">
-
-
-      
-      <p>Ahora vas a ver varios grupos de caras de 4 fotos cada uno, donde en cada uno de ellos puede estar o no estar alguna de las caras qué viste ayer.
-        <br>
-        Si reconoces alguna de las caras, seleccioná el item correspondiente.
-        <br>
-        Si no reconoces ninguna, seleccioná el item "No reconozo ninguna foto".
-      </p>
-  
-      <button type="button" onclick=arrancar()>Hacé click aca para empezar</button>
-
-    </div>
-    </div>
-
-    
-  </center>
-
-    
-      
-      <script>
-      var nombre=""
-
-        listaDeListas = [[],[],[],
-    ["5.png", "6.png", "7.png", "8.png"],
-    ["9.png", "10.png", "11.png", "12.png"],
-    ["13.png", "14.png", "15.png", "16.png"],
-    ["17.png", "18.png", "19.png", "20.png"],
-    ["21.png", "22.png", "23.png", "24.png"],
-    ["25.png", "26.png", "27.png", "28.png"],
-    ["29.png", "30.png", "31.png", "32.png"],
-    ["33.png", "34.png", "35.png", "36.png"],
-    ["37.png", "38.png", "39.png", "40.png"],
-    ["41.png", "42.png", "43.png", "44.png"],
-    ["45.png", "46.png", "47.png", "48.png"],
-    ["49.png", "50.png", "51.png", "52.png"],
-    ["53.png", "54.png", "55.png", "56.png"],
-    ["57.png", "58.png", "59.png", "60.png"],
-    ["61.png", "62.png", "63.png", "64.png"],
-    ["65.png", "66.png", "67.png", "68.png"],
-    ["69.png", "70.png", "71.png", "72.png"],
-    ["73.png", "74.png", "75.png", "76.png"],
-    ["77.png", "78.png", "79.png", "80.png"]
-]
-
-
-listadeform= [
- 
-  "",
-  "",
-  "",
-  "entry.654654213",
-  "entry.382411965",
-  "entry.2037083056",
-  "entry.886149271",
-  "entry.907416049",
-  "entry.1418381728",
-  "entry.72290639",
-  "entry.363949614",
-  "entry.1711811273",
-  "entry.1517085409",
-  "entry.698840136",
-  "entry.1908953650",
-  "entry.1699675223",
-  "entry.634465647",
-  "entry.968594461",
-  "entry.1069435838",
-  "entry.1202236740",
-  "entry.1229038774",
-  "entry.1043419842"
-];
-
-listadeconfianza=[
-"",
-  "",
-  "",
-  "entry.522384799",
-  "entry.1883501272",
-  "entry.1972270636",
-  "entry.1337497220",
-  "entry.2016005840",
-  "entry.2035497817",
-  "entry.1493202072",
-  "entry.1416726301",
-  "entry.1142123831",
-  "entry.1723759967",
-  "entry.292304713",
-  "entry.1745279037",
-  "entry.1401984538",
-  "entry.1929657092",
-  "entry.442115413",
-  "entry.1307083773",
-  "entry.1088017712",
-  "entry.1994960044",
-  "entry.928017660"
-
-]
-
-
-
-        let indice=0;
-        function pasar() {
-        indice++;
-        
-        if (indice==1){
-          var first = document.querySelector("input[name='entry.344689282']:checked");
-
-        
-          if (!first) {
-             alert("Por favor responde la pregunta anterior antes de continuar.");
-             indice=0;
-             return;
-  
-            }
-          document.getElementById("primero").style.display="none";
-          document.getElementById("lineup1").style.display="none";
-          document.getElementById("confianza1").style.display="block";
-        }
-        else if(indice==2){
-          var second =Number(document.querySelector('input[name="entry.765174671"]').value);
-
-
-          if (second=="" || isNaN(second)) {
-          alert("Por favor responde la pregunta anterior con un numero entre 1 y 100.");
-          indice=1;
-          return;
-        }
-
-
-          document.getElementById("lineup").style.display="none";
-          document.getElementById("lineup1").style.display="none";
-          document.getElementById("confianza1").style.display="none";
-          document.getElementById("corte").style.display="block";
-
-          
-        }
-
-        else if (indice>=3 && indice<=21){
-          if (indice>=4){
-
-          document.getElementById(listadeconfianza[indice-1]).style.display="none";
-        }
-          let sublist= listaDeListas[indice];
-          
-          document.getElementById("corte").style.display="none";
-          document.getElementById("1").src=sublist[0];
-          document.getElementById("2").src=sublist[1];
-          document.getElementById("3").src=sublist[2];
-          document.getElementById("4").src=sublist[3];
-          
-          
-         
-          document.getElementById("cont").style.display="block";
-
-          
-
-
-              // Crear el elemento de entrada de tipo radio
-              var radioInput = document.createElement("input");
-              radioInput.type = "radio";
-              radioInput.name = listadeform[indice]; 
-              radioInput.id = listadeform[indice];
-              
-              radioInput.value = "1"; // Valor del radio button
-              // Crear la etiqueta asociada al radio button
-              var label1 = document.createElement("label");
-              label1.textContent = "Foto 1";
-              label1.id=listadeform[indice]; // Texto de la etiqueta
-              label1.appendChild(radioInput); // Agregar el radio button a la etiqueta
-              // Obtener el formulario existente
-              var myForm = document.getElementById("lineup1").appendChild(label1);
-              
-
-
-                          // Crear el elemento de entrada de tipo radio
-                          var radioInput = document.createElement("input");
-              radioInput.type = "radio";
-              radioInput.name = listadeform[indice];
-              radioInput.id = listadeform[indice]; // El mismo nombre para agrupar los radios
-              radioInput.value = "2"; // Valor del radio button
-              // Crear la etiqueta asociada al radio button
-              var label1 = document.createElement("label");
-              label1.textContent = "Foto 2";
-              label1.id=listadeform[indice]+1; // Texto de la etiqueta
-              label1.appendChild(radioInput); // Agregar el radio button a la etiqueta
-              // Obtener el formulario existente
-              var myForm = document.getElementById("lineup1").appendChild(label1);
-              
-            
-
-                            // Crear el elemento de entrada de tipo radio
-                            var radioInput = document.createElement("input");
-              radioInput.type = "radio";
-              radioInput.name = listadeform[indice];
-              radioInput.id = listadeform[indice]; // El mismo nombre para agrupar los radios
-              radioInput.value = "3"; // Valor del radio button
-              
-              // Crear la etiqueta asociada al radio button
-              var label1 = document.createElement("label");
-              label1.textContent = "Foto 3";
-              label1.id=listadeform[indice]+2; // Texto de la etiqueta
-              label1.appendChild(radioInput); // Agregar el radio button a la etiqueta
-              // Obtener el formulario existente
-              var myForm = document.getElementById("lineup1").appendChild(label1);
-              
-
-
-                          // Crear el elemento de entrada de tipo radio
-                          var radioInput = document.createElement("input");
-              radioInput.type = "radio";
-              radioInput.name = listadeform[indice];
-              radioInput.id = listadeform[indice]; // El mismo nombre para agrupar los radios
-              radioInput.value = "4"; // Valor del radio button
-              // Crear la etiqueta asociada al radio button
-              var label1 = document.createElement("label");
-              label1.textContent = "Foto 4"; // Texto de la etiqueta
-              label1.id=listadeform[indice]+3;
-              label1.appendChild(radioInput); // Agregar el radio button a la etiqueta
-              // Obtener el formulario existente
-              var myForm = document.getElementById("lineup1").appendChild(label1);
-              
-              
-
-
-               // Crear el elemento de entrada de tipo radio
-                var radioInput = document.createElement("input");
-              radioInput.type = "radio";
-              radioInput.name = listadeform[indice];
-              radioInput.id = listadeform[indice]; // El mismo nombre para agrupar los radios
-              console.log("el boton es"+radioInput.id)
-              radioInput.value = "0"; // Valor del radio button
-              // Crear la etiqueta asociada al radio button
-              var label1 = document.createElement("label");
-              label1.textContent = "No reconozco ninguna foto"; // Texto de la etiqueta
-              label1.appendChild(radioInput); // Agregar el radio button a la etiqueta
-              label1.id=listadeform[indice]+4;
-              // Obtener el formulario existente
-              var myForm = document.getElementById("lineup1").appendChild(label1);
-              document.getElementById("lineup").style.display="block";
-
-              document.getElementById("lineup1").style.display="block";
-              document.getElementById("irAConfianza").style.display="block";
-              document.getElementById("cont").style.display="none";
-              nombre=radioInput.name;
-              
-
-
-        }
-        
-
-        else if (indice>=21){
-          document.getElementById("lineup").style.display="block";
-          document.getElementById("ruedas").style.display="none";
-          document.getElementById("lineup1").style.display="none";
-          document.getElementById("corte").style.display="none";
-          document.getElementById("cont").style.display="none";
-         
-          document.getElementById("final").style.display="block";
-          
-
-
-        }
-
-
-
-        }
-
-
-        function pasarAConfianza() {
-          
-        console.log(listadeform[indice]);  
-        var disposit = document.querySelector("input[name='"+listadeform[indice] +"']:checked");
-
-        
-        if (!disposit ) {
-          alert("Por favor responde la pregunta anterior antes de continuar.");
-          return;
-        }
-     
-          console.log(listadeform[indice].value);
-          console.log("lo que se oculta es"+ document.getElementById(nombre).id);
-          document.getElementById(nombre).style.display="none";
-          document.getElementById(nombre+1).style.display="none";
-          document.getElementById(nombre+2).style.display="none";
-          document.getElementById(nombre+3).style.display="none";
-          document.getElementById(nombre+4).style.display="none";
-          
-          document.getElementById("cont").style.display="block";
-          document.getElementById("irAConfianza").style.display="none";
-          
-          var confInput = document.createElement("input");
-          confInput.type = "text";
-          confInput.name = listadeconfianza[indice]; 
-          
-          var labelConfianza = document.createElement("label");
-              labelConfianza.textContent = "¿Cuanta confianza tenes en tu elección? Respondé con un número entre el 1 y el 100.  "; // Texto de la etiqueta
-              labelConfianza.appendChild(document.createElement("br"));
-              labelConfianza.id=listadeconfianza[indice];
-              labelConfianza.appendChild(confInput); 
-              // Obtener el formulario existente
-              
-
-              document.getElementById("lineup1").appendChild(labelConfianza);
-          
-
-        }
-
-
-
-        function pasarACorte (){
-
-          var nameRespuesta =parseInt(document.querySelector('input[name="'+listadeconfianza[indice] +'"]').value);
-          console.log(nameRespuesta);
-          console.log(typeof(nameRespuesta));
-
-          if (nameRespuesta=="" || isNaN(nameRespuesta)) {
-          alert("Por favor responde la pregunta anterior con un numero entre 1 y 100.");
-          return;
-        }
-
-          
-          document.getElementById("lineup").style.display="none";
-          document.getElementById("corte").style.display="block";
-
-
-        }
-
-
-        function arrancar( ) {
-
-          var ide =document.querySelector('input[name="entry.1505109284"]').value;
-
-
-          if (ide=="" ) {
-          alert("Por favor ingresa tu nombre antes de comenzar");
-          
-          return;
-          }
-          
-
-          
-          document.getElementById("consigna").style.display="none";
-          document.getElementById("lineup").style.display="block";
-          document.getElementById("ruedas").style.display="block";
-          document.getElementById("primero").style.display="block";
-
-        }
-
-function activarPantallaCompleta() {
-            var elemento = document.documentElement; // La página completa
-
-            // Verifica si el método requestFullscreen es compatible con el navegador
-            if (elemento.requestFullscreen) {
-                // Coloca la página completa en modo de pantalla completa
-                elemento.requestFullscreen();
-            } else if (elemento.mozRequestFullScreen) { // Firefox
-                elemento.mozRequestFullScreen();
-            } else if (elemento.webkitRequestFullscreen) { // Chrome, Safari y Opera
-                elemento.webkitRequestFullscreen();
-            } else if (elemento.msRequestFullscreen) { // Internet Explorer / Edge
-                elemento.msRequestFullscreen();
-            }
-        }
-
-        function salirPantallaCompleta() {
-            // Verifica si el método exitFullscreen es compatible con el navegador
-            if (document.exitFullscreen) {
-                // Sale del modo de pantalla completa
-                document.exitFullscreen();
-            } else if (document.mozCancelFullScreen) { // Firefox
-                document.mozCancelFullScreen();
-            } else if (document.webkitExitFullscreen) { // Chrome, Safari y Opera
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) { // Internet Explorer / Edge
-                document.msExitFullscreen();
-            }
-        }
-
-      </script>
-
-
-        
-
-
-   
-   
-
-   
-   
-      </form>
-    
+</div>
+
+<div class="modal" id="confirmationModal">
+  <div class="modal-content">
+    <p>¿Confirmar elección?</p>
+    <img src="" alt="Selected" id="selectedPhoto" style="width:100px;">
+    <br>
+    <button class="confirm-button" id="confirmButton">Confirmar</button>
+    <button class="cancel-button" id="cancelButton">Cancelar</button>
   </div>
+</div>
 
+<div class="full-screen hidden" id="instructionsQuestions">
+  <h2>Instrucciones para las Preguntas</h2>
+  <p>A continuación responderás a una serie de preguntas con "Sí" o "No".</p>
+  <button onclick="startQuestions()">Comenzar</button>
+</div>
 
+<div class="full-screen hidden" id="questionContainer">
+  <h2>Preguntas</h2>
+  <div id="questionContent">
+    <!-- Questions will be displayed here -->
+  </div>
+</div>
+
+<div class="full-screen hidden" id="instructionsAdditionalQuestions">
+  <h2>Instrucciones para la Segunda Parte</h2>
+  <p>Ahora responderás una nueva serie de preguntas con "Sí" o "No".</p>
+  <button onclick="startAdditionalQuestions()">Comenzar</button>
+</div>
+
+<div class="full-screen hidden" id="additionalQuestionContainer">
+  <h2>Preguntas Finales</h2>
+  <div id="additionalQuestionContent">
+    <!-- Additional Questions will be displayed here -->
+  </div>
+</div>
+
+<script>
+  // Simulated photos for each lineup
+  const lineups = [
+    ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png"],
+    ["7.png", "8.png", "9.png", "10.png", "11.png", "12.png"]
+  ];
+
+  // Questions for the first questionnaire
+  const questions = [
+    "¿Pregunta 1?", "¿Pregunta 2?", "¿Pregunta 3?", "¿Pregunta 4?", 
+    "¿Pregunta 5?", "¿Pregunta 6?", "¿Pregunta 7?", "¿Pregunta 8?",
+    "¿Pregunta 9?", "¿Pregunta 10?"
+  ];
+
+  // Additional questions for the final questionnaire
+  const additionalQuestions = [
+    "¿Pregunta adicional 1?", "¿Pregunta adicional 2?", "¿Pregunta adicional 3?", 
+    "¿Pregunta adicional 4?", "¿Pregunta adicional 5?", "¿Pregunta adicional 6?", 
+    "¿Pregunta adicional 7?", "¿Pregunta adicional 8?", "¿Pregunta adicional 9?", 
+    "¿Pregunta adicional 10?", "¿Pregunta adicional 11?", "¿Pregunta adicional 12?"
+  ];
+
+  let currentLineup = 0;
+  let currentQuestion = 0;
+  let currentAdditionalQuestion = 0;
+  let userName = "";
+  let userDevice = "";
+  const lineupContainer = document.getElementById("lineupContainer");
+  const nameScreen = document.getElementById("nameScreen");
+  const instructionsStart = document.getElementById("instructionsStart");
+  const questionContainer = document.getElementById("questionContainer");
+  const photoGrid = document.getElementById("photoGrid");
+  const confirmationModal = document.getElementById("confirmationModal");
+  const selectedPhoto = document.getElementById("selectedPhoto");
+  const confirmButton = document.getElementById("confirmButton");
+  const cancelButton = document.getElementById("cancelButton");
+  const instructionsQuestions = document.getElementById("instructionsQuestions");
+  const instructionsAdditionalQuestions = document.getElementById("instructionsAdditionalQuestions");
+  const questionContent = document.getElementById("questionContent");
+  const additionalQuestionContainer = document.getElementById("additionalQuestionContainer");
+  const additionalQuestionContent = document.getElementById("additionalQuestionContent");
+
+  // Store device info
+  function setDevice(device) {
+    userName = document.getElementById("nameInput").value;
+    if (userName === "") {
+      alert("Por favor, ingresa tu nombre.");
+      return;
+    }
+    userDevice = device;
+    nameScreen.classList.add("hidden");
+    instructionsStart.classList.remove("hidden");
+  }
+
+  // Start recognition lineup
+  function showLineup() {
+    instructionsStart.classList.add("hidden");
+    lineupContainer.classList.remove("hidden");
+    loadLineup();
+  }
+
+  // Load photos for the current lineup
+  function loadLineup() {
+    photoGrid.innerHTML = "";
+    lineups[currentLineup].forEach(photo => {
+      const img = document.createElement("img");
+      img.src = photo;
+      img.classList.add("photo");
+      img.onclick = () => openConfirmationModal(photo);
+      photoGrid.appendChild(img);
+    });
+  }
+
+  // Open confirmation modal
+  function openConfirmationModal(photo) {
+    selectedPhoto.src = photo;
+    confirmationModal.style.display = "flex";
+  }
+
+  // Close confirmation modal
+  function closeConfirmationModal() {
+    confirmationModal.style.display = "none";
+  }
+
+  // Confirm selection
+  confirmButton.onclick = () => {
+    closeConfirmationModal();
+    currentLineup++;
+    if (currentLineup < lineups.length) {
+      loadLineup(); // Load next lineup
+    } else {
+      lineupContainer.classList.add("hidden");
+      instructionsQuestions.classList.remove("hidden");
+    }
+  };
+
+  // Cancel selection
+  cancelButton.onclick = closeConfirmationModal;
+
+  // Start first question set after instruction screen
+  function startQuestions() {
+    instructionsQuestions.classList.add("hidden");
+    questionContainer.classList.remove("hidden");
+    showQuestion();
+  }
+
+  // Show current question in the first set
+  function showQuestion() {
+    if (currentQuestion < questions.length) {
+      questionContent.innerHTML = `<p>${questions[currentQuestion]}</p>
+        <button onclick="answerQuestion('Sí')">Sí</button>
+        <button onclick="answerQuestion('No')">No</button>`;
+    } else {
+      questionContainer.classList.add("hidden");
+      instructionsAdditionalQuestions.classList.remove("hidden");
+    }
+  }
+
+  // Answer a question in the first set
+  function answerQuestion(answer) {
+    console.log(`Respuesta: ${answer} a ${questions[currentQuestion]}`);
+    currentQuestion++;
+    showQuestion();
+  }
+
+  // Start additional question set
+  function startAdditionalQuestions() {
+    instructionsAdditionalQuestions.classList.add("hidden");
+    additionalQuestionContainer.classList.remove("hidden");
+    showAdditionalQuestion();
+  }
+
+  // Show current question in the additional set
+  function showAdditionalQuestion() {
+    if (currentAdditionalQuestion < additionalQuestions.length) {
+      additionalQuestionContent.innerHTML = `<p>${additionalQuestions[currentAdditionalQuestion]}</p>
+        <button onclick="answerAdditionalQuestion('Sí')">Sí</button>
+        <button onclick="answerAdditionalQuestion('No')">No</button>`;
+    } else {
+      additionalQuestionContainer.innerHTML = `<h2>¡Gracias por participar!</h2>`;
+    }
+  }
+
+  // Answer a question in the additional set
+  function answerAdditionalQuestion(answer) {
+    console.log(`Respuesta: ${answer} a ${additionalQuestions[currentAdditionalQuestion]}`);
+    currentAdditionalQuestion++;
+    showAdditionalQuestion();
+  }
+</script>
 </body>
 </html>
