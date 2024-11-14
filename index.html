@@ -212,9 +212,9 @@
 
 
 
-
 <form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfEi933R1Blt42MR_0lJHEvIWz5UABFElPt4CikEWCW8lfrmA/formResponse"  target="formTarget" method="POST">
   <!-- Campos para el formulario de Google -->
+  <input type="hidden" name="entry.1706121057" id="entry.1706121057">
   <input type="hidden" name="entry.1795197407" id="entry_1795197407">
   <input type="hidden" name="entry.1108713682" id="entry_1108713682">
 
@@ -325,6 +325,7 @@ const additionalQuestions = [
 let currentLineup = 0;
 let currentQuestion = 0;
 let currentAdditionalQuestion = 0;
+let group="";
 
 // UI Elements
 const lineupContainer = document.getElementById("lineupContainer");
@@ -345,6 +346,30 @@ const additionalQuestionContent = document.getElementById("additionalQuestionCon
 const confidenceInput = document.getElementById("confidenceInput");
 const confidence = document.getElementById("confidence");
 const opcionCero = document.getElementById("opcionCero");
+
+
+
+
+ // Function to get URL parameter by name
+ function getParameterByName(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    // Function to handle the group parameter
+    function handleGroupParameter() {
+      group = getParameterByName('group');
+      if (group) {
+        // Display the group for debugging or save it in your form data
+        console.log("User's group:", group);
+      }
+    }
+
+    // Run this function when the page loads
+    window.onload = handleGroupParameter;
+
+
+
 
 // Store device info
 function setDevice(device) {
@@ -524,6 +549,8 @@ function answerAdditionalQuestion(answer) {
 
             // Asignar las respuestas a los campos ocultos
            
+            
+document.getElementById('entry.1706121057').value = group;          
  document.getElementById('entry_1795197407').value = userName;
 document.getElementById('entry_1108713682').value = userDevice;
 
