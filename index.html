@@ -248,6 +248,8 @@
 
 <form id="cronotipoForm" action="https://docs.google.com/forms/d/e/1FAIpQLSdk3xYnRpUXuv5t078IutxucMrH6zIate0hDMU28O_cVg7-DQ/formResponse"  method="POST">
   <!-- Campos para el formulario de Google -->
+  
+  <input type="hidden" name="entry.389458798" id="entry.389458798">
   <input type="hidden" name="entry.223455243" id="entry_223455243">
   <input type="hidden" name="entry.2135024330" id="entry_2135024330">
   <input type="hidden" name="entry.1478644393" id="entry_1478644393">
@@ -466,6 +468,7 @@ function showQuestion() {
       <button onclick="answerQuestion('NO SE')">No se</button>`;
   } else {
     questionContainer.classList.add("hidden");
+    asignarRespuestas();
     instructionsAdditionalQuestions.classList.remove("hidden");
   }
 }
@@ -480,7 +483,7 @@ function answerQuestion(answer) {
 
 // Start additional question set
 function startAdditionalQuestions() {
-  asignarRespuestas();
+  
   instructionsAdditionalQuestions.classList.add("hidden");
   additionalQuestionContainer.classList.remove("hidden");
   showAdditionalQuestion();
@@ -586,6 +589,8 @@ document.getElementById('entry_1035456947').value = firstSetAnswers  [17];
 function asignarRespuestasCronotipo(){
   console.log( additionalQuestionAnswers);
 
+
+document.getElementById('entry.389458798').value = group;
 document.getElementById('entry_223455243').value = userName;
 document.getElementById('entry_2135024330').value = additionalQuestionAnswers[0];
 document.getElementById('entry_1478644393').value = additionalQuestionAnswers[1];
