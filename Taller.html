@@ -11,14 +11,13 @@
     /* General */
     body, html {
       height: 100%;
-      font-family: Arial, sans-serif;
-      font-family: 'Roboto', sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+      font-family: 'Roboto', Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     /* Full-screen containers */
@@ -47,6 +46,7 @@
       width: 100%;
       cursor: pointer;
       transition: transform 0.3s;
+      border-radius: 5px;
     }
     .photo:hover {
       transform: scale(1.05);
@@ -77,49 +77,65 @@
 
     /* Buttons */
     button {
-      
-      padding: 10px 20px;
-      margin-top: 10px;
-      font-size: 16px;
-      cursor: pointer;
-
       background-color: #673ab7;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+      margin: 5px;
     }
 
+    button:hover {
+      background-color: #5e35b1;
+    }
 
     .text-container {
-            max-width: 600px;
-            width: 100%;
-            background-color: #fff;
-            border: 1px solid #dadce0;
-            border-top: 8px solid #673ab7;
-            border-radius: 8px;
-            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
+      max-width: 600px;
+      width: 100%;
+      background-color: #fff;
+      border: 1px solid #dadce0;
+      border-top: 8px solid #673ab7;
+      border-radius: 8px;
+      box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+    }
 
-    .confirm-button { background-color: #4CAF50; color: white; }
-    .cancel-button { background-color: #f44336; color: white; }
+    .confirm-button { background-color: #4CAF50; }
+    .confirm-button:hover { background-color: #45a049; }
+    .cancel-button { background-color: #f44336; }
+    .cancel-button:hover { background-color: #da190b; }
+
+    input[type="text"], input[type="number"], input[type="time"] {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      width: 200px;
+    }
+
+    .loading {
+      display: none;
+      margin-top: 20px;
+      color: #673ab7;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-<!-- Eliminada la pantalla de ingreso de nombre -->
-
-<div class="full-screen" id="instructionsStart" class="text-container" >
-  <h2>Instrucciones </h2>
+<!-- Comienza directamente con las instrucciones -->
+<div class="full-screen" id="instructionsStart">
+  <h2>Instrucciones</h2>
   <br>
-  <p class="text-container">Ahora vas a realizar una rueda de reconocimiento con seis sospechosos, entre los que se puede encontrar una de las personas que robó la pizzería en el video que viste. Tomate tu tiempo para verlos.<br>
-    Si identificas a uno de los ladrones entre los sospechosos seleccioná su foto. Si no reconoces a ninguno utiliza el boton "no reconozco a ninguno" que esta abajo de las fotos.</p>
+  <div class="text-container">
+    <p>Ahora vas a realizar una rueda de reconocimiento con seis sospechosos, entre los que se puede encontrar una de las personas que robó la pizzería en el video que viste. Tomate tu tiempo para verlos.<br>
+      Si identificas a uno de los ladrones entre los sospechosos seleccioná su foto. Si no reconoces a ninguno utiliza el boton "no reconozco a ninguno" que esta abajo de las fotos.</p>
+  </div>
   <br>
   <button onclick="showLineup()">Comenzar</button>
 </div>
@@ -130,34 +146,34 @@
   <div class="photo-grid" id="photoGrid">
     <!-- Photos will be dynamically added here -->
   </div>
-  <button id="opcionCero"> No reconozco a ninguno</button>
+  <br>
+  <button id="opcionCero">No reconozco a ninguno</button>
 </div>
 
 <div class="modal" id="confirmationModal">
   <div class="modal-content">
     <p>¿Confirmar elección?</p>
-    <img src="" alt="Selected" id="selectedPhoto" style="width:100px;">
-    <br>
+    <img src="" alt="Selected" id="selectedPhoto" style="width:100px; border-radius:5px;">
+    <br><br>
     <button class="confirm-button" id="confirmButton">Confirmar</button>
     <button class="cancel-button" id="cancelButton">Cancelar</button>
   </div>
 </div>
 
-<div id="confidence" class="full-screen hidden" >
-<p> Del 0 al 100 ¿Qué confianza tenes en tu elección?</p>
-<br>
-<center>
-<input type="number" id="confidenceInput" min="0" max="100" placeholder="Confianza (0-100)" required>
-<br>
-<button class="confirm-button" id="nextButton">Seguir</button>
-</center>
+<div id="confidence" class="full-screen hidden">
+  <p>Del 0 al 100 ¿Qué confianza tenes en tu elección?</p>
+  <br>
+  <input type="number" id="confidenceInput" min="0" max="100" placeholder="Confianza (0-100)" required>
+  <br><br>
+  <button class="confirm-button" id="nextButton">Seguir</button>
 </div>
 
 <div class="full-screen hidden" id="instructionsQuestions">
   <h2>Cuestionario</h2>
   <br>
-  <br>
-  <p class="text-container">En la siguiente tarea vas a responder una serie de preguntas referidas al video, utilizando uno de los tres botones debajo de cada pregunta.</p>
+  <div class="text-container">
+    <p>En la siguiente tarea vas a responder una serie de preguntas referidas al video, utilizando uno de los tres botones debajo de cada pregunta.</p>
+  </div>
   <br>
   <button onclick="startQuestions()">Comenzar</button>
 </div>
@@ -165,25 +181,22 @@
 <div class="full-screen hidden" id="questionContainer">
   <h2>Preguntas</h2>
   <br>
-  <br>
   <div id="questionContent">
     <!-- Questions will be displayed here -->
-  
   </div>
-  <br>
-  <br>
 </div>
-
-<!-- Eliminado el cuestionario final sobre hábitos de sueño -->
 
 <div class="full-screen hidden" id="thankYouScreen">
   <h2>¡Gracias por participar!</h2>
   <br>
-  <p class="text-container">Tu participación ha sido muy valiosa para nuestro estudio.</p>
+  <div class="text-container">
+    <p>Tu participación ha sido muy valiosa para nuestro estudio.</p>
+    <p class="loading" id="loadingMessage">Enviando respuestas...</p>
+  </div>
 </div>
 
-<form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfEi933R1Blt42MR_0lJHEvIWz5UABFElPt4CikEWCW8lfrmA/formResponse"  target="formTarget" method="POST">
-  <!-- Campos para el formulario de Google -->
+<!-- Formulario principal -->
+<form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSc6GToABx5tQTPC_5XS03qoUTYwaIjF0gM5I_zxRIM3TDtJsg/formResponse" target="formTarget" method="POST">
   <input type="hidden" name="entry.1706121057" id="entry.1706121057">
   <input type="hidden" name="entry.1795197407" id="entry_1795197407">
   <input type="hidden" name="entry.1108713682" id="entry_1108713682">
@@ -214,14 +227,14 @@
 </form>
 
 <iframe name="formTarget" style="display:none;"></iframe>
+
 <script>
 // Variables para almacenar respuestas
-let userName = "Participante"; // Valor por defecto
-let userDevice = "No especificado"; // Valor por defecto
+let userId = "";
+let userDevice = "Computadora";
 let userLineupSelections = [];
 let userConfidenceLevels = [];
 let firstSetAnswers = [];
-let additionalQuestionAnswers = [];
 
 // Simulated photos for each lineup
 const lineups = [
@@ -253,11 +266,11 @@ const questions = [
 
 let currentLineup = 0;
 let currentQuestion = 0;
-let group="";
+let group = "";
 
 // UI Elements
-const lineupContainer = document.getElementById("lineupContainer");
 const instructionsStart = document.getElementById("instructionsStart");
+const lineupContainer = document.getElementById("lineupContainer");
 const questionContainer = document.getElementById("questionContainer");
 const photoGrid = document.getElementById("photoGrid");
 const confirmationModal = document.getElementById("confirmationModal");
@@ -271,6 +284,7 @@ const confidenceInput = document.getElementById("confidenceInput");
 const confidence = document.getElementById("confidence");
 const opcionCero = document.getElementById("opcionCero");
 const thankYouScreen = document.getElementById("thankYouScreen");
+const loadingMessage = document.getElementById("loadingMessage");
 
 // Function to get URL parameter by name
 function getParameterByName(name) {
@@ -278,13 +292,36 @@ function getParameterByName(name) {
   return urlParams.get(name);
 }
 
+// Function to generate random ID
+function generateRandomId() {
+  return 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
+}
+
+// Function to get or create user ID from localStorage
+function getOrCreateUserId() {
+  let storedUserId = localStorage.getItem('study_user_id');
+  
+  if (!storedUserId) {
+    storedUserId = generateRandomId();
+    localStorage.setItem('study_user_id', storedUserId);
+    console.log("Nuevo ID de usuario generado:", storedUserId);
+  } else {
+    console.log("ID de usuario recuperado de localStorage:", storedUserId);
+  }
+  
+  return storedUserId;
+}
+
 // Function to handle the group parameter
 function handleGroupParameter() {
   group = getParameterByName('group');
   if (group) {
-    // Display the group for debugging or save it in your form data
     console.log("User's group:", group);
   }
+  
+  // Obtener o crear ID de usuario desde localStorage
+  userId = getOrCreateUserId();
+  console.log("User ID:", userId);
 }
 
 // Run this function when the page loads
@@ -305,9 +342,11 @@ function loadLineup() {
     img.src = photo;
     img.classList.add("photo");
     img.onclick = () => openConfirmationModal(photo);
-    opcionCero.onclick = () => openConfirmationModal("0.jpg");
     photoGrid.appendChild(img);
   });
+  
+  // Reasignar el evento para el botón "No reconozco a ninguno"
+  opcionCero.onclick = () => openConfirmationModal("0.jpg");
 }
 
 // Open confirmation modal
@@ -326,10 +365,17 @@ confirmButton.onclick = () => {
   closeConfirmationModal();
   lineupContainer.classList.add("hidden");
   confidence.classList.remove("hidden");
-  userLineupSelections.push(selectedPhoto.src.match(/(\d+)(?=\.jpg$)/)[0]);
+  
+  // Extraer el número de la foto seleccionada
+  const photoMatch = selectedPhoto.src.match(/(\d+)(?=\.jpg$)/);
+  if (photoMatch) {
+    userLineupSelections.push(photoMatch[0]);
+  } else {
+    userLineupSelections.push("0"); // Para "No reconozco a ninguno"
+  }
 };
 
-// next lineup
+// Next lineup
 nextButton.onclick = () => {
   const confidenceValue = confidenceInput.value;
   if (confidenceValue < 0 || confidenceValue > 100 || confidenceValue === "") {
@@ -338,20 +384,19 @@ nextButton.onclick = () => {
   }
 
   userConfidenceLevels.push(confidenceValue);
-  console.log( userConfidenceLevels);
-  lineupContainer.classList.remove("hidden");
+  console.log("Confidence levels:", userConfidenceLevels);
+  
   confidence.classList.add("hidden");
-  closeConfirmationModal();
+  confidenceInput.value = "";
   currentLineup++;
 
   if (currentLineup < lineups.length) {
+    lineupContainer.classList.remove("hidden");
     loadLineup(); // Load next lineup
   } else {
     lineupContainer.classList.add("hidden");
     instructionsQuestions.classList.remove("hidden");
-    
   }
-  confidenceInput.value = "";
 };
 
 // Cancel selection
@@ -367,58 +412,93 @@ function startQuestions() {
 // Show current question in the first set
 function showQuestion() {
   if (currentQuestion < questions.length) {
-    questionContent.innerHTML = `<p>${questions[currentQuestion]}</p><br><br>
+    questionContent.innerHTML = `
+      <div class="text-container">
+        <p>${questions[currentQuestion]}</p>
+      </div>
+      <br>
       <button onclick="answerQuestion('SI')">Sí</button>
       <button onclick="answerQuestion('NO')">No</button>
-      <button onclick="answerQuestion('NO SE')">No se</button>`;
+      <button onclick="answerQuestion('NO SE')">No se</button>
+    `;
   } else {
     questionContainer.classList.add("hidden");
     asignarRespuestas();
-    thankYouScreen.classList.remove("hidden");
   }
 }
 
 // Responder una pregunta en el primer conjunto
 function answerQuestion(answer) {
-  firstSetAnswers.push(answer); // Guardamos solo el valor de la respuesta
+  firstSetAnswers.push(answer);
   currentQuestion++;
-  console.log(firstSetAnswers);
+  console.log("Answers:", firstSetAnswers);
   showQuestion();
 }
 
 // Función para asignar las respuestas dinámicamente
 function asignarRespuestas() {
+  // Mostrar mensaje de carga
+  thankYouScreen.classList.remove("hidden");
+  loadingMessage.style.display = "block";
+  
   // Asignar las respuestas a los campos ocultos
-  document.getElementById('entry.1706121057').value = group;          
-  document.getElementById('entry_1795197407').value = userName;
+  document.getElementById('entry.1706121057').value = group || "No especificado";          
+  document.getElementById('entry_1795197407').value = userId;
   document.getElementById('entry_1108713682').value = userDevice;
 
-  document.getElementById('entry_1976955927').value = userLineupSelections [0];
-  document.getElementById('entry_1006823805').value = userConfidenceLevels[0];
-  document.getElementById('entry_114523550').value = userLineupSelections [1];
-  document.getElementById('entry_1993344215').value = userConfidenceLevels[1];
+  // Asignar selecciones de rueda de reconocimiento
+  document.getElementById('entry_1976955927').value = userLineupSelections[0] || "No seleccionado";
+  document.getElementById('entry_1006823805').value = userConfidenceLevels[0] || "0";
+  document.getElementById('entry_114523550').value = userLineupSelections[1] || "No seleccionado";
+  document.getElementById('entry_1993344215').value = userConfidenceLevels[1] || "0";
 
-  document.getElementById('entry_1220245853').value = firstSetAnswers [0];
-  document.getElementById('entry_1511974812').value = firstSetAnswers [1];
-  document.getElementById('entry_591454687').value = firstSetAnswers  [2];
-  document.getElementById('entry_1654474234').value = firstSetAnswers  [3];
-  document.getElementById('entry_1724594370').value = firstSetAnswers  [4];
-  document.getElementById('entry_765485932').value = firstSetAnswers [5];
-  document.getElementById('entry_2054724147').value = firstSetAnswers [6];
-  document.getElementById('entry_540105700').value = firstSetAnswers  [7];
-  document.getElementById('entry_1879992819').value = firstSetAnswers [8];
-  document.getElementById('entry_545488488').value = firstSetAnswers  [9];
-  document.getElementById('entry_1138152553').value = firstSetAnswers  [10];
-  document.getElementById('entry_2101045136').value = firstSetAnswers  [11];
-  document.getElementById('entry_973497637').value = firstSetAnswers  [12];
-  document.getElementById('entry_1051167862').value = firstSetAnswers  [13];
-  document.getElementById('entry_1619698537').value = firstSetAnswers  [14];
-  document.getElementById('entry_2100816218').value = firstSetAnswers  [15],
-  document.getElementById('entry_120025552').value = firstSetAnswers  [16];
-  document.getElementById('entry_1035456947').value = firstSetAnswers  [17];
+  // Asignar respuestas a preguntas
+  const entries = [
+    'entry_1220245853', 'entry_1511974812', 'entry_591454687', 'entry_1654474234',
+    'entry_1724594370', 'entry_765485932', 'entry_2054724147', 'entry_540105700',
+    'entry_1879992819', 'entry_545488488', 'entry_1138152553', 'entry_2101045136',
+    'entry_973497637', 'entry_1051167862', 'entry_1619698537', 'entry_2100816218',
+    'entry_120025552', 'entry_1035456947'
+  ];
 
-  // Enviar el formulario automáticamente
-  document.getElementById('googleForm').submit();
+  for (let i = 0; i < entries.length; i++) {
+    document.getElementById(entries[i]).value = firstSetAnswers[i] || "No respondida";
+  }
+
+  // Enviar el formulario después de un breve retraso para asegurar que los valores se han establecido
+  setTimeout(() => {
+    const form = document.getElementById('googleForm');
+    
+    // Verificar que todos los campos tengan valores
+    const allInputs = form.querySelectorAll('input[type="hidden"]');
+    let allFilled = true;
+    
+    allInputs.forEach(input => {
+      if (!input.value || input.value === "") {
+        console.warn(`Campo vacío: ${input.name}`);
+        allFilled = false;
+      }
+    });
+    
+    if (allFilled) {
+      console.log("Enviando formulario...");
+      console.log("Datos a enviar:", {
+        group: document.getElementById('entry.1706121057').value,
+        userId: document.getElementById('entry_1795197407').value,
+        device: document.getElementById('entry_1108713682').value
+      });
+      
+      form.submit();
+      
+      // Ocultar mensaje de carga después del envío
+      setTimeout(() => {
+        loadingMessage.style.display = "none";
+      }, 2000);
+    } else {
+      console.error("No se pueden enviar campos vacíos");
+      loadingMessage.textContent = "Error al enviar respuestas. Por favor, recarga la página e intenta nuevamente.";
+    }
+  }, 500);
 }
 </script>
 </body>
