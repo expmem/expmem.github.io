@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruedas de Reconocimiento</title>
+  <style>
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* General */
+    body, html {
+      height: 100%;
+      font-family: Arial, sans-serif;
+      font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    }
+
+    /* Full-screen containers */
+    .full-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .hidden { display: none; }
+
+    /* Grid for photos */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-width: 600px;
+      width: 90%;
+    }
+
+    .photo {
+      width: 100%;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .photo:hover {
+      transform: scale(1.05);
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      display: none;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+      max-width: 90%;
+      width: 300px;
+    }
+
+    /* Buttons */
+    button {
+      
+      padding: 10px 20px;
+      margin-top: 10px;
+      font-size: 16px;
+      cursor: pointer;
+
+      background-color: #673ab7;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    }
+
+
+    .text-container {
+            max-width: 600px;
+            width: 100%;
+            background-color: #fff;
+            border: 1px solid #dadce0;
+            border-top: 8px solid #673ab7;
+            border-radius: 8px;
+            box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+    .confirm-button { background-color: #4CAF50; color: white; }
+    .cancel-button { background-color: #f44336; color: white; }
+  </style>
+</head>
+<body>
+
+<!-- Eliminada la pantalla de ingreso de nombre -->
+
+<div class="full-screen" id="instructionsStart" class="text-container" >
+  <h2>Instrucciones </h2>
+  <br>
+  <p class="text-container">Ahora vas a realizar una rueda de reconocimiento con seis sospechosos, entre los que se puede encontrar una de las personas que robó la pizzería en el video que viste. Tomate tu tiempo para verlos.<br>
+    Si identificas a uno de los ladrones entre los sospechosos seleccioná su foto. Si no reconoces a ninguno utiliza el boton "no reconozco a ninguno" que esta abajo de las fotos.</p>
+  <br>
+  <button onclick="showLineup()">Comenzar</button>
+</div>
+
+<div class="full-screen hidden" id="lineupContainer">
+  <h2>¿Reconoces a alguno de los ladrones?</h2>
+  <br>
+  <div class="photo-grid" id="photoGrid">
+    <!-- Photos will be dynamically added here -->
+  </div>
+  <button id="opcionCero"> No reconozco a ninguno</button>
+</div>
+
+<div class="modal" id="confirmationModal">
+  <div class="modal-content">
+    <p>¿Confirmar elección?</p>
+    <img src="" alt="Selected" id="selectedPhoto" style="width:100px;">
+    <br>
+    <button class="confirm-button" id="confirmButton">Confirmar</button>
+    <button class="cancel-button" id="cancelButton">Cancelar</button>
+  </div>
+</div>
+
+<div id="confidence" class="full-screen hidden" >
+<p> Del 0 al 100 ¿Qué confianza tenes en tu elección?</p>
+<br>
+<center>
+<input type="number" id="confidenceInput" min="0" max="100" placeholder="Confianza (0-100)" required>
+<br>
+<button class="confirm-button" id="nextButton">Seguir</button>
+</center>
+</div>
+
+<div class="full-screen hidden" id="instructionsQuestions">
+  <h2>Cuestionario</h2>
+  <br>
+  <br>
+  <p class="text-container">En la siguiente tarea vas a responder una serie de preguntas referidas al video, utilizando uno de los tres botones debajo de cada pregunta.</p>
+  <br>
+  <button onclick="startQuestions()">Comenzar</button>
+</div>
+
+<div class="full-screen hidden" id="questionContainer">
+  <h2>Preguntas</h2>
+  <br>
+  <br>
+  <div id="questionContent">
+    <!-- Questions will be displayed here -->
+  
+  </div>
+  <br>
+  <br>
+</div>
+
+<!-- Eliminado el cuestionario final sobre hábitos de sueño -->
+
+<div class="full-screen hidden" id="thankYouScreen">
+  <h2>¡Gracias por participar!</h2>
+  <br>
+  <p class="text-container">Tu participación ha sido muy valiosa para nuestro estudio.</p>
+</div>
+
+<form id="googleForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfEi933R1Blt42MR_0lJHEvIWz5UABFElPt4CikEWCW8lfrmA/formResponse"  target="formTarget" method="POST">
+  <!-- Campos para el formulario de Google -->
+  <input type="hidden" name="entry.1706121057" id="entry.1706121057">
+  <input type="hidden" name="entry.1795197407" id="entry_1795197407">
+  <input type="hidden" name="entry.1108713682" id="entry_1108713682">
+
+  <input type="hidden" name="entry.1976955927" id="entry_1976955927">
+  <input type="hidden" name="entry.1006823805" id="entry_1006823805">
+  <input type="hidden" name="entry.114523550" id="entry_114523550">
+  <input type="hidden" name="entry.1993344215" id="entry_1993344215">
+
+  <input type="hidden" name="entry.1220245853" id="entry_1220245853">
+  <input type="hidden" name="entry.1511974812" id="entry_1511974812">
+  <input type="hidden" name="entry.591454687" id="entry_591454687">
+  <input type="hidden" name="entry.1654474234" id="entry_1654474234">
+  <input type="hidden" name="entry.1724594370" id="entry_1724594370">
+  <input type="hidden" name="entry.765485932" id="entry_765485932">
+  <input type="hidden" name="entry.2054724147" id="entry_2054724147">
+  <input type="hidden" name="entry.540105700" id="entry_540105700">
+  <input type="hidden" name="entry.1879992819" id="entry_1879992819">
+  <input type="hidden" name="entry.545488488" id="entry_545488488">
+  <input type="hidden" name="entry.1138152553" id="entry_1138152553">
+  <input type="hidden" name="entry.2101045136" id="entry_2101045136">
+  <input type="hidden" name="entry.973497637" id="entry_973497637">
+  <input type="hidden" name="entry.1051167862" id="entry_1051167862">
+  <input type="hidden" name="entry.1619698537" id="entry_1619698537">
+  <input type="hidden" name="entry.2100816218" id="entry_2100816218">
+  <input type="hidden" name="entry.120025552" id="entry_120025552">
+  <input type="hidden" name="entry.1035456947" id="entry_1035456947"> 
+</form>
+
+<iframe name="formTarget" style="display:none;"></iframe>
+<script>
+// Variables para almacenar respuestas
+let userName = "Participante"; // Valor por defecto
+let userDevice = "No especificado"; // Valor por defecto
+let userLineupSelections = [];
+let userConfidenceLevels = [];
+let firstSetAnswers = [];
+let additionalQuestionAnswers = [];
+
+// Simulated photos for each lineup
+const lineups = [
+  ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg"],
+  ["7.jpg", "8.jpg", "9.jpg", "10.jpg", "11.jpg", "12.jpg"]
+];
+
+// Questions for the first questionnaire
+const questions = [
+  "¿Los ladrones dieron la orden de levantar las manos?", 
+  "¿Los ladrones llegaron en auto?", 
+  "¿Un cliente tenía anteojos?", 
+  "¿Los ladrones golpearon al cajero?", 
+  "¿La camarera lloró durante el robo?", 
+  "¿Había un ladrón con barba?", 
+  "¿Un ladrón llevaba campera verde?", 
+  "¿Los ladrones entraron juntos al local?", 
+  "¿Había dos ladrones?", 
+  "¿Le pegaron un culatazo a un cliente?", 
+  "¿Un cliente llevaba camisa?", 
+  "¿Se robaron la computadora del cajero?", 
+  "¿Había seis clientes?", 
+  "¿Un ladrón tenia tatuajes en la cara?", 
+  "¿Los ladrones amenazaron al espectador?", 
+  "¿Los ladrones llevaban mochilas?", 
+  "¿Una clienta llevaba suéter naranja?", 
+  "¿Los ladrones empujaron una mesa para sacarla del camino?"
+];
+
+let currentLineup = 0;
+let currentQuestion = 0;
+let group="";
+
+// UI Elements
+const lineupContainer = document.getElementById("lineupContainer");
+const instructionsStart = document.getElementById("instructionsStart");
+const questionContainer = document.getElementById("questionContainer");
+const photoGrid = document.getElementById("photoGrid");
+const confirmationModal = document.getElementById("confirmationModal");
+const selectedPhoto = document.getElementById("selectedPhoto");
+const confirmButton = document.getElementById("confirmButton");
+const cancelButton = document.getElementById("cancelButton");
+const nextButton = document.getElementById("nextButton");
+const instructionsQuestions = document.getElementById("instructionsQuestions");
+const questionContent = document.getElementById("questionContent");
+const confidenceInput = document.getElementById("confidenceInput");
+const confidence = document.getElementById("confidence");
+const opcionCero = document.getElementById("opcionCero");
+const thankYouScreen = document.getElementById("thankYouScreen");
+
+// Function to get URL parameter by name
+function getParameterByName(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
+
+// Function to handle the group parameter
+function handleGroupParameter() {
+  group = getParameterByName('group');
+  if (group) {
+    // Display the group for debugging or save it in your form data
+    console.log("User's group:", group);
+  }
+}
+
+// Run this function when the page loads
+window.onload = handleGroupParameter;
+
+// Start recognition lineup
+function showLineup() {
+  instructionsStart.classList.add("hidden");
+  lineupContainer.classList.remove("hidden");
+  loadLineup();
+}
+
+// Load photos for the current lineup
+function loadLineup() {
+  photoGrid.innerHTML = "";
+  lineups[currentLineup].forEach(photo => {
+    const img = document.createElement("img");
+    img.src = photo;
+    img.classList.add("photo");
+    img.onclick = () => openConfirmationModal(photo);
+    opcionCero.onclick = () => openConfirmationModal("0.jpg");
+    photoGrid.appendChild(img);
+  });
+}
+
+// Open confirmation modal
+function openConfirmationModal(photo) {
+  selectedPhoto.src = photo;
+  confirmationModal.style.display = "flex";
+}
+
+// Close confirmation modal
+function closeConfirmationModal() {
+  confirmationModal.style.display = "none";
+}
+
+// Confirm selection
+confirmButton.onclick = () => {
+  closeConfirmationModal();
+  lineupContainer.classList.add("hidden");
+  confidence.classList.remove("hidden");
+  userLineupSelections.push(selectedPhoto.src.match(/(\d+)(?=\.jpg$)/)[0]);
+};
+
+// next lineup
+nextButton.onclick = () => {
+  const confidenceValue = confidenceInput.value;
+  if (confidenceValue < 0 || confidenceValue > 100 || confidenceValue === "") {
+    alert("Por favor, ingresa un nivel de confianza entre 0 y 100.");
+    return;
+  }
+
+  userConfidenceLevels.push(confidenceValue);
+  console.log( userConfidenceLevels);
+  lineupContainer.classList.remove("hidden");
+  confidence.classList.add("hidden");
+  closeConfirmationModal();
+  currentLineup++;
+
+  if (currentLineup < lineups.length) {
+    loadLineup(); // Load next lineup
+  } else {
+    lineupContainer.classList.add("hidden");
+    instructionsQuestions.classList.remove("hidden");
+    
+  }
+  confidenceInput.value = "";
+};
+
+// Cancel selection
+cancelButton.onclick = closeConfirmationModal;
+
+// Start first question set after instruction screen
+function startQuestions() {
+  instructionsQuestions.classList.add("hidden");
+  questionContainer.classList.remove("hidden");
+  showQuestion();
+}
+
+// Show current question in the first set
+function showQuestion() {
+  if (currentQuestion < questions.length) {
+    questionContent.innerHTML = `<p>${questions[currentQuestion]}</p><br><br>
+      <button onclick="answerQuestion('SI')">Sí</button>
+      <button onclick="answerQuestion('NO')">No</button>
+      <button onclick="answerQuestion('NO SE')">No se</button>`;
+  } else {
+    questionContainer.classList.add("hidden");
+    asignarRespuestas();
+    thankYouScreen.classList.remove("hidden");
+  }
+}
+
+// Responder una pregunta en el primer conjunto
+function answerQuestion(answer) {
+  firstSetAnswers.push(answer); // Guardamos solo el valor de la respuesta
+  currentQuestion++;
+  console.log(firstSetAnswers);
+  showQuestion();
+}
+
+// Función para asignar las respuestas dinámicamente
+function asignarRespuestas() {
+  // Asignar las respuestas a los campos ocultos
+  document.getElementById('entry.1706121057').value = group;          
+  document.getElementById('entry_1795197407').value = userName;
+  document.getElementById('entry_1108713682').value = userDevice;
+
+  document.getElementById('entry_1976955927').value = userLineupSelections [0];
+  document.getElementById('entry_1006823805').value = userConfidenceLevels[0];
+  document.getElementById('entry_114523550').value = userLineupSelections [1];
+  document.getElementById('entry_1993344215').value = userConfidenceLevels[1];
+
+  document.getElementById('entry_1220245853').value = firstSetAnswers [0];
+  document.getElementById('entry_1511974812').value = firstSetAnswers [1];
+  document.getElementById('entry_591454687').value = firstSetAnswers  [2];
+  document.getElementById('entry_1654474234').value = firstSetAnswers  [3];
+  document.getElementById('entry_1724594370').value = firstSetAnswers  [4];
+  document.getElementById('entry_765485932').value = firstSetAnswers [5];
+  document.getElementById('entry_2054724147').value = firstSetAnswers [6];
+  document.getElementById('entry_540105700').value = firstSetAnswers  [7];
+  document.getElementById('entry_1879992819').value = firstSetAnswers [8];
+  document.getElementById('entry_545488488').value = firstSetAnswers  [9];
+  document.getElementById('entry_1138152553').value = firstSetAnswers  [10];
+  document.getElementById('entry_2101045136').value = firstSetAnswers  [11];
+  document.getElementById('entry_973497637').value = firstSetAnswers  [12];
+  document.getElementById('entry_1051167862').value = firstSetAnswers  [13];
+  document.getElementById('entry_1619698537').value = firstSetAnswers  [14];
+  document.getElementById('entry_2100816218').value = firstSetAnswers  [15],
+  document.getElementById('entry_120025552').value = firstSetAnswers  [16];
+  document.getElementById('entry_1035456947').value = firstSetAnswers  [17];
+
+  // Enviar el formulario automáticamente
+  document.getElementById('googleForm').submit();
+}
+</script>
+</body>
+</html>
